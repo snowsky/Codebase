@@ -27,6 +27,8 @@ def get_tasks():
 @app.route('/task/<int:task_id>', methods=['GET'])
 def get_task(task_id):
 	task = filter(lambda x: x['id']==task_id, tasks)
+	if(len(task)==0):
+		abort(404)
 	return jsonify({"task": task})
 
 @app.route('/cpu')
