@@ -1,13 +1,33 @@
 #!flask/bin/python
 
-from flask import Flask
+from flask import Flask, jsonify, abort
 import subprocess
 
 app = Flask(__name__)
 
+tasks = [
+{
+	'id': 1,
+	'name': "Hao",
+	'sex': "Male"
+},
+{
+	'id': 2,
+	'name': "Xue",
+	'sex': "Female"
+}]
+
 @app.route('/')
 def index():
 	return "Hello, World!"
+
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+	return jsonify({"tasks": tasks})
+@app.route('/task/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+	task = filter(lambda x: x['id']==task_id, tasks)
+	return jsonify({"task": task})
 
 @app.route('/cpu')
 def get_cpu():
