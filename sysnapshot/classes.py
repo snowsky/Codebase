@@ -144,9 +144,9 @@ class SnapSet(object):
 
 if __name__ == "__main__":
 	#with daemon.DaemonContext():
-	logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s - %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+	#logging.basicConfig(level=logging.INFO,
+        #                format='%(asctime)s - %(message)s',
+        #                datefmt='%Y-%m-%d %H:%M:%S')
 	#event_handler = LoggingEventHandler()
 	event_handler = SnapSetHandler()
 	observer = Observer()
