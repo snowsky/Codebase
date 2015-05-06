@@ -1,7 +1,18 @@
 <head>
-  <title>login</title>
-  <script src="main.js"></script>
-  <link rel="stylesheet" href="main.css" type="text/css" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>My AngularJS App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
+    <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+    <link rel="stylesheet" href="app.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="main.css" type="text/css">
+    <script src="main.js"></script>
 </head>
 
 <body>
@@ -13,23 +24,36 @@
         <input type="submit" id="login-button" value="Sign in" />
      </div>
    </form-->
-  <div id="card">
-    <h2>Sign-up  </h2>
-    <form id="signupForm" action="action">
-      <input type="text" id="signupName" name="name" placeholder="Name.."/>
-      <input type="text" id="signupMail" name="email" placeholder="Mail.." />
-      <input type="text" id="signupPassword" name="password"  placeholder="Password.." />
-      <input type="checkbox" id="tos" name="tos" />
-      <label for="tos">Accept the <a href="">Terms of service</a></label>
-      <input type="checkbox" id="news" name="news">
-      <label for="news">Subscribe to our newsltetter !</label>
+  <div class="tab-content">
+    <div class="tab-pane " id="signup">
+      <h2>Sign-up  </h2>
+      <form id="signupForm" action="action">
+        <input type="text" id="signupName" name="name" placeholder="Name.."/>
+        <input type="text" id="signupMail" name="email" placeholder="Mail.." />
+        <input type="text" id="signupPassword" name="password"  placeholder="Password.." />
+        <input type="checkbox" id="tos" name="tos" />
+        <label for="tos">Accept the <a href="">Terms of service</a></label>
+        <input type="checkbox" id="news" name="news">
+        <label for="news">Subscribe to our newsltetter !</label>
+      
+        <input type="submit" id="submit" name="submit"/>
+        <input type="submit" id="submit" name="submit" value=" Facebook"/>
+        <input type="submit" id="submit" name="submit" value=" Twitter"/>
+      </form>
+    </div>
     
-      <input type="submit" id="submit" name="submit"/>
-      <input type="submit" id="submit" name="submit" value=" Facebook"/>
-      <input type="submit" id="submit" name="submit" value=" Twitter"/>
-    </form>
+    <div class="tab-pane " id="login">
+      <h2>Login  </h2>
+      <form id="loginForm" action="action">
+        <input type="text" id="loginName" name="name" placeholder="Name.."/>
+        <input type="text" id="loginPassword" name="password"  placeholder="Password.." />
+      
+        <input type="submit" id="submit" name="submit"/>
+        <input type="submit" id="submit" name="submit" value=" Facebook"/>
+        <input type="submit" id="submit" name="submit" value=" Twitter"/>
+      </form>
+    </div>
   </div>
-   
   
   
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
