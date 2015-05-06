@@ -12,12 +12,12 @@ body {
     color: #27ae60;
     font-size: 12px;
 }
-#card {
+#signup {
     width: 220px;
     margin: auto;
     margin-top: 120px;
 }
-#card h2 {
+#signup h2 {
     text-shadow: 0 1px 0 #27ae60;
     font-size: 1.62em;
     color: #2ecc71;
@@ -31,8 +31,8 @@ body {
     -moz-box-shadow: 0 1px 0 #27ae60;
     box-shadow: 0 1px 0 #27ae60;
 }
-#card a { color: #27ae60 }
-#card label {
+#signup a { color: #27ae60 }
+#signup label {
     font-size: 10px;
     display: block;
     float: right;
