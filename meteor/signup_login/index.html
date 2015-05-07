@@ -41,14 +41,19 @@
     
     <div class="tab-pane active" id="login">
       <h2>Login  </h2>
-      <form id="loginForm" action="action">
-        <input type="text" id="loginName" name="name" placeholder="Name.."/>
-        <input type="text" id="loginPassword" name="password"  placeholder="Password.." />
-      
-        <input type="submit" id="submit" name="submit"/>
-        <input type="submit" id="submit" name="submit" value=" Facebook"/>
-        <input type="submit" id="submit" name="submit" value=" Twitter"/>
-      </form>
+      <div>
+          <form id="loginForm" action="action">
+            <input type="text" id="loginName" name="name" placeholder="Name.."/>
+            <input type="text" id="loginPassword" name="password"  placeholder="Password.." />
+
+            <input type="submit" id="submit" name="submit"/>
+            <input type="submit" id="submit" name="submit" value=" Facebook"/>
+            <input type="submit" id="submit" name="submit" value=" Twitter"/>
+          </form>
+      </div>
+      <div class="text-right">
+          Already has an account? <a href="#login" role="tab" data-toggle="tab">Login</a>
+      </div>
     </div>
   </div>
   
