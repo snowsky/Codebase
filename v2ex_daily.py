@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
  
 username = 'snowsky' ###??###
-password = '072832' ###??###
+password = '' ###??###
 login_url = 'http://v2ex.com/signin' ###?V2EX????? SSL,??? https###
 index_url = 'http://v2ex.com' ###??###
 mission_url = 'http://www.v2ex.com/mission/daily' ###??###
