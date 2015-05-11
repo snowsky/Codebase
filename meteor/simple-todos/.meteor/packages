@@ -7,7 +7,3 @@
 meteor-platform
 autopublish
 insecure
-accounts-ui
-accounts-password
-urigo:angular
-angularui:angular-ui-router
