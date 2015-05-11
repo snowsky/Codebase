@@ -2,7 +2,7 @@ if (Meteor.isClient) {
 
   'use strict';
   
-  var userApp = angular.module('userApp', ['angular-meteor', 'ui-router']);
+  var userApp = angular.module('userApp', ['angular-meteor', 'ui.router']);
   
   userApp.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
       $routeProvider
