@@ -2,10 +2,12 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var _ = require('underscore');
+var s = require('underscore.string');
 //var cheerio = require('cheerio');
 
 var SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '.credentials/';
+var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'gmail-api-quickstart.json';
 var userId = 'hao.1.wang@gmail.com';
 var maxResults = 100;
@@ -139,7 +141,7 @@ function listMessages(auth) {
             auth: auth,
             userId: userId,
             labelIds: labelId,
-            maxResults: maxResults,
+            maxResults: 100,
           }, function (err, response) {
             if (err) {
               console.log('list messages failed: ' + err);
@@ -149,7 +151,7 @@ function listMessages(auth) {
             if (messages.length == 0) {
               console.log('No messages found.');
             } else {
-              for (var i = 0; i < maxResults; i ++) {
+              for (var i = 0; i < 100; i ++) {
                 var message = messages[i];
                 //console.log('- %s', extractField(message, "Subject"));
                 gmail.users.messages.get({
@@ -162,7 +164,10 @@ function listMessages(auth) {
                     console.log('get messages failed: ' + err);
                     return;
                   } else {
-                    console.log(extractField(response, "Subject"));
+                    subject = extractField(response, "Subject");
+                    if (! s.startsWith(subject.toUpperCase(), "RE:")) {
+                      console.log(extractField(response, "Subject"));
+                    }
                   }
                 });
         //        console.log('- %s', JSON.stringify(message));
