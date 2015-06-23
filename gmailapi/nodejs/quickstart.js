@@ -2,10 +2,13 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+//var cheerio = require('cheerio');
 
 var SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) + '.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'gmail-api-quickstart.json';
+var userId = 'hao.1.wang@gmail.com';
+var maxResults = 100;
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecret(err, content) {
@@ -13,7 +16,8 @@ fs.readFile('client_secret.json', function processClientSecret(err, content) {
     console.log('Error loading client secret file: ' + err);
     return;
   }
-  authorize(JSON.parse(content), listLabels);
+//  authorize(JSON.parse(content), listLabels);
+  authorize(JSON.parse(content), listMessages);
 });
 
 function authorize(credentials, callback) {
@@ -32,6 +36,7 @@ function authorize(credentials, callback) {
       callback(oauth2Client);
     }
   });
+
 }
 
 /**
@@ -88,11 +93,11 @@ function storeToken(token) {
  *
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listLabels(auth) {
+function listLabels(auth, labelName) {
   var gmail = google.gmail('v1');
   gmail.users.labels.list({
     auth: auth,
-    userId: 'me',
+    userId: userId,
   }, function(err, response) {
     if (err) {
       console.log('The API returned an error: ' + err);
@@ -111,34 +116,69 @@ function listLabels(auth) {
   });
 }
 
-/**
- * Retrieve Messages in user's mailbox matching query.
- *
- * @param  {String} userId User's email address. The special value 'me'
- * can be used to indicate the authenticated user.
- * @param  {String} query String used to filter the Messages listed.
- * @param  {Function} callback Function to call when the request is complete.
- */
-function listMessages(userId, query, callback) {
-  var getPageOfMessages = function(request, result) {
-    request.execute(function(resp) {
-      result = result.concat(resp.messages);
-      var nextPageToken = resp.nextPageToken;
-      if (nextPageToken) {
-        request = gapi.client.gmail.users.messages.list({
-          'userId': userId,
-          'pageToken': nextPageToken,
-          'q': query
-        });
-        getPageOfMessages(request, result);
-      } else {
-        callback(result);
+function listMessages(auth) {
+  var gmail = google.gmail('v1');
+  var labelId;
+
+  gmail.users.labels.list({
+    auth: auth,
+    userId: userId,
+  }, function (err, response) {
+    if (err) {
+      console.log('The API returned an error: ' + err);
+      return;
+    }
+    var labels = response.labels;
+    if (labels.length == 0) {
+      console.log('No labels found.');
+    } else {
+      for (var i = 0; i < labels.length; i++) {
+        if (labels[i].name == "hr") {
+          labelId = labels[i].id;
+          gmail.users.messages.list({
+            auth: auth,
+            userId: userId,
+            labelIds: labelId,
+            maxResults: maxResults,
+          }, function (err, response) {
+            if (err) {
+              console.log('list messages failed: ' + err);
+              return;
+            }
+            var messages = response.messages;
+            if (messages.length == 0) {
+              console.log('No messages found.');
+            } else {
+              for (var i = 0; i < maxResults; i ++) {
+                var message = messages[i];
+                //console.log('- %s', extractField(message, "Subject"));
+                gmail.users.messages.get({
+                  auth: auth,
+                  id: message.id,
+                  userId: userId,
+                  format: "full",
+                }, function (err, response) {
+                  if (err) {
+                    console.log('get messages failed: ' + err);
+                    return;
+                  } else {
+                    console.log(extractField(response, "Subject"));
+                  }
+                });
+        //        console.log('- %s', JSON.stringify(message));
+              }
+            }
+          });
+
+          return;
+        }
       }
-    });
-  };
-  var initialRequest = gapi.client.gmail.users.messages.list({
-    'userId': userId,
-    'q': query
+    }
   });
-  getPageOfMessages(initialRequest, []);
 }
+
+var extractField = function(json, fieldName) {
+  return json.payload.headers.filter(function(header) {
+    return header.name === fieldName;
+  })[0].value;
+};

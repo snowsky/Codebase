@@ -1,2 +1,3 @@
 *.pyc
 bootstrap
+node_modules

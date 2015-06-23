@@ -1,0 +1,17 @@
+{
+  "name": "nodejs",
+  "version": "0.0.0",
+  "description": "ERROR: No README data found!",
+  "main": "quickstart.js",
+  "dependencies": {
+    "google-auth-library": "~0.9.6",
+    "googleapis": "~2.0.5",
+    "passport-google": "~0.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}
