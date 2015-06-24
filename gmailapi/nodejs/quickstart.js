@@ -138,6 +138,8 @@ function listMessages(auth) {
       for (var i = 0; i < labels.length; i++) {
         if (labels[i].name == "hr") {
           var label = labels[i];
+          getMessages(auth, userId, label, "");
+/*
           async.series([
             function (callback) {
               getMessages(auth, userId, label, "");
@@ -151,6 +153,7 @@ function listMessages(auth) {
             console.log('Error get all messages: ' + err);
     // results is now equal to ['one', 'two']
           }); 
+*/
         }
       }
     }
@@ -167,6 +170,9 @@ var extractField = function(json, fieldName) {
 var getAllMessages = function(auth, userId, label) {
   console.log(pagetoken);
   getMessages(auth, userId, label, pagetoken);
+  if (pagetoken) {
+    getMessages(auth, userId, label, pagetoken);
+  }
 /*
   async.whilst(
     function () { 
@@ -185,6 +191,7 @@ var getAllMessages = function(auth, userId, label) {
 
 var getMessages = function(auth, userId, label, pageToken) {
   labelId = label.id;
+console.log(label.name);
   gmail.users.messages.list({
     auth: auth,
     userId: userId,
@@ -218,9 +225,11 @@ var getMessages = function(auth, userId, label, pageToken) {
               console.log(extractField(response, "Subject"));
             }
           }
-          return pagetoken;
         });
       }
+    }
+    if (pagetoken) {
+      getMessages(auth, userId, label, pagetoken);
     }
   });
 
