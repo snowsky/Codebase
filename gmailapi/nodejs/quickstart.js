@@ -2,6 +2,7 @@ var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var async = require('async');
 var _ = require('underscore');
 var s = require('underscore.string');
 //var cheerio = require('cheerio');
@@ -11,6 +12,9 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH || process.env.USERPRO
 var TOKEN_PATH = TOKEN_DIR + 'gmail-api-quickstart.json';
 var userId = 'hao.1.wang@gmail.com';
 var maxResults = 100;
+var gmail = google.gmail('v1');
+var labelId, pagetoken;
+
 
 // Load client secrets from a local file.
 fs.readFile('client_secret.json', function processClientSecret(err, content) {
@@ -119,9 +123,6 @@ function listLabels(auth, labelName) {
 }
 
 function listMessages(auth) {
-  var gmail = google.gmail('v1');
-  var labelId;
-
   gmail.users.labels.list({
     auth: auth,
     userId: userId,
@@ -136,46 +137,20 @@ function listMessages(auth) {
     } else {
       for (var i = 0; i < labels.length; i++) {
         if (labels[i].name == "hr") {
-          labelId = labels[i].id;
-          gmail.users.messages.list({
-            auth: auth,
-            userId: userId,
-            labelIds: labelId,
-            maxResults: 100,
-          }, function (err, response) {
-            if (err) {
-              console.log('list messages failed: ' + err);
-              return;
+          var label = labels[i];
+          async.series([
+            function (callback) {
+              getMessages(auth, userId, label, "");
+              callback();
+            },
+            function (callback) {
+              getAllMessages(auth, userId, label);
+              callback();
             }
-            var messages = response.messages;
-            if (messages.length == 0) {
-              console.log('No messages found.');
-            } else {
-              for (var i = 0; i < 100; i ++) {
-                var message = messages[i];
-                //console.log('- %s', extractField(message, "Subject"));
-                gmail.users.messages.get({
-                  auth: auth,
-                  id: message.id,
-                  userId: userId,
-                  format: "full",
-                }, function (err, response) {
-                  if (err) {
-                    console.log('get messages failed: ' + err);
-                    return;
-                  } else {
-                    subject = extractField(response, "Subject");
-                    if (! s.startsWith(subject.toUpperCase(), "RE:")) {
-                      console.log(extractField(response, "Subject"));
-                    }
-                  }
-                });
-        //        console.log('- %s', JSON.stringify(message));
-              }
-            }
-          });
-
-          return;
+          ], function(err, results){
+            console.log('Error get all messages: ' + err);
+    // results is now equal to ['one', 'two']
+          }); 
         }
       }
     }
@@ -186,4 +161,67 @@ var extractField = function(json, fieldName) {
   return json.payload.headers.filter(function(header) {
     return header.name === fieldName;
   })[0].value;
+};
+
+// Get all messages
+var getAllMessages = function(auth, userId, label) {
+  console.log(pagetoken);
+  getMessages(auth, userId, label, pagetoken);
+/*
+  async.whilst(
+    function () { 
+      if(pagetoken == undefined) return;
+    },
+    function (cb) {
+      pagetoken = getMessages(auth, userId, label, pagetoken);
+    },
+    function (err) {
+      console.log("Error get messages: " + err);
+        // 5 seconds have passed
+    }
+  );
+*/
+};
+
+var getMessages = function(auth, userId, label, pageToken) {
+  labelId = label.id;
+  gmail.users.messages.list({
+    auth: auth,
+    userId: userId,
+    labelIds: labelId,
+    maxResults: maxResults,
+    pageToken: pageToken,
+  }, function (err, response) {
+    if (err) {
+      console.log('list messages failed: ' + err);
+      return;
+    }
+    pagetoken = response.nextPageToken;
+    var messages = response.messages;
+    if (messages.length == 0) {
+      console.log('No messages found.');
+    } else {
+      for (var i = 0; i < messages.length; i ++) {
+        var message = messages[i];
+        gmail.users.messages.get({
+          auth: auth,
+          id: message.id,
+          userId: userId,
+          format: "full",
+        }, function (err, response) {
+          if (err) {
+            console.log('get messages failed: ' + err);
+            return;
+          } else {
+            subject = extractField(response, "Subject");
+            if (! s.startsWith(subject.toUpperCase(), "RE:")) {
+              console.log(extractField(response, "Subject"));
+            }
+          }
+          return pagetoken;
+        });
+      }
+    }
+  });
+
 };
