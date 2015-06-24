@@ -5,6 +5,10 @@ var googleAuth = require('google-auth-library');
 var async = require('async');
 var _ = require('underscore');
 var s = require('underscore.string');
+var mongoose = require('mongoose');
+
+var uri = 'mongodb://localhost/superhr';
+mongoose.connect(uri);
 //var cheerio = require('cheerio');
 
 var SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
