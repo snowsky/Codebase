@@ -14,8 +14,12 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function callback () {
-       console.log('Connected to MongoDB, Yaya!');
-       return;
+    console.log('Connected to MongoDB, Yaya!');
+    return;
+});
+
+db.on('disconnected', function callback() {
+    mongoose.disconnect();
 });
 
 var mailSchema = new Schema ({
@@ -239,15 +243,9 @@ var getMessages = function (auth, userId, label, pageToken) {
                     } else {
                         subject = extractField(response, "Subject");
                         if (!s.startsWith(subject.toUpperCase(), "RE:")) {
-                            console.log(extractField(response, "Subject"));
 //                            console.log(JSON.stringify(response));
                             
                             var mail = new hrMail(response);
-//                            var mail = new hrMail({
-//                                id: response.id,
-//                                threadId: response.threadId
-//                            });
-
                             mail.save(function(err) {
                                 console.log("Cannot insert to db! " + err);
                             });
@@ -259,7 +257,6 @@ var getMessages = function (auth, userId, label, pageToken) {
         if (pagetoken) {
             getMessages(auth, userId, label, pagetoken);
         }
-//        mongoose.disconnect();
     });
 
 };
