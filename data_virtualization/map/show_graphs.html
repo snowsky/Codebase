@@ -29,7 +29,7 @@
         <div id="machine_list"></div>
         <script type="text/javascript" src="graphs.js"></script>
         <script>
-            $('#dropdown').change(function (e) {
+            $('#dropdown').click(function (e) {
                 var optionSelected = $(this).find("option:selected");
                 update_graph(optionSelected.val());
             });
