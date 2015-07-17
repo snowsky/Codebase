@@ -7,12 +7,13 @@
         <script src="js/d3pie.js"></script>
         <script src="js/underscore.js"></script>
         <script src="http://code.jquery.com/jquery.js"></script>
+<!--        <link href='http://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'>-->
 
         <style type="text/css">
-            .slice text {
-                font-size: 16pt;
-                font-family: Arial;
-            }   
+            text {
+                font-size: 12pt;
+                font-family: 'Nunito', sans-serif;
+            }
         </style>
     </head>
     <body>
@@ -27,7 +28,6 @@
         <div id="bar"></div>
         <div id="machine_list"></div>
         <script type="text/javascript" src="graphes.js"></script>
-<!--        <script type="text/javascript" src="versions_pie.js"></script>-->
         <script>
             $('#dropdown').change(function (e) {
                 var optionSelected = $(this).find("option:selected");

@@ -1,3 +1,9 @@
+var versionColumn = "CenOS Release",
+    hostColumn = "Name",
+    cpuColumn = "CPUCount",
+    memColumn = "MemoryGB",
+    diskColumn = "DiskCapacity";
+
 // Pie chart for version
 var width = height = 1500,
     radius = 400,
@@ -13,15 +19,9 @@ var update_graph = function(option) {
             console.log(option);
             break;
         case "cpu":
-            bar_graph(csvFile, tag, "cpu", width, height);
-            console.log(option);
-            break;
         case "memory":
-            bar_graph(csvFile, tag, "memory", width, height);
-            console.log(option);
-            break;
         case "harddisk":
-            bar_graph(csvFile, tag, "harddisk", width, height);
+            bar_graph(csvFile, tag, option, width, height);
             console.log(option);
             break;
     }
@@ -64,11 +64,11 @@ var bar_graph = function(csvFile, tag, name, width, height) {
         data = data.sort(function(a, b) {
             switch(name) {
                 case "cpu":
-                    return d3.descending(+a.CPUCount, +b.CPUCount);
+                    return d3.descending(+a[cpuColumn], +b[cpuColumn]);
                 case "memory":
-                    return d3.descending(+a.MemoryGB, +b.MemoryGB);
+                    return d3.descending(+a[memColumn], +b[memColumn]);
                 case "harddisk":
-                    return d3.descending(+a.DiskCapacity, +b.DiskCapacity);
+                    return d3.descending(+a[diskColumn], +b[diskColumn]);
             }
         });
         console.log(data);
@@ -83,11 +83,11 @@ var bar_graph = function(csvFile, tag, name, width, height) {
                 .attr("width", function(d){
                     switch(name) {
                         case "cpu":
-                            return d.CPUCount * 100;
+                            return d[cpuColumn] * 100;
                         case "memory":
-                            return d.MemoryGB * 10;
+                            return d[memColumn] * 10;
                         case "harddisk":
-                            return d.DiskCapacity;
+                            return d[diskColumn];
                     }
                 })
                 .attr("height", 20)
@@ -103,11 +103,11 @@ var bar_graph = function(csvFile, tag, name, width, height) {
                 .text(function(d) { 
                     switch(name) {
                         case "cpu":
-                            return d.Name+" : "+d.CPUCount;;
+                            return d[hostColumn]+" : "+d[cpuColumn];;
                         case "memory":
-                            return d.Name+" : "+d.MemoryGB+"GB";
+                            return d[hostColumn]+" : "+d[memColumn]+"GB";
                         case "harddisk":
-                            return d.Name+" : "+d.DiskCapacity+"GB";
+                            return d[hostColumn]+" : "+d[diskColumn]+"GB";
                     }
                 });
     });
@@ -127,8 +127,8 @@ var pie_graph = function(csvFile, tag, width, height, radius) {
     // Load csv file
     d3.csv(csvFile, function (data) {
         data.forEach(function(line, index) {
-            if(line["CenOS Release"] == "") line["CenOS Release"] = "Unknown";
-            version[line["CenOS Release"]] = version[line["CenOS Release"]] + 1 || 1;
+            if(line[versionColumn] == "") line[versionColumn] = "Unknown";
+            version[line[versionColumn]] = version[line[versionColumn]] + 1 || 1;
         });
     //    console.log(version);
         allData = obj2arr(version);
@@ -161,8 +161,8 @@ var pie_graph = function(csvFile, tag, width, height, radius) {
                     $("#machine_list").append(a.data["label"]+":<br>");
                     data.forEach(function(line, index) {
                         $("#machine_list").append(function() {
-                            if(line["CenOS Release"] == a.data["label"])
-                                return line["Name"]+"<br>";
+                            if(line[versionColumn] == a.data["label"])
+                                return line[hostColumn]+"<br>";
                         });
                     });
                 }
