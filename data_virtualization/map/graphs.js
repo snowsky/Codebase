@@ -32,6 +32,7 @@ var hideAll = function () {
     $("#pie").hide();
     $("#bar").empty();
     $("#machine_list").hide();
+    $("#machine_list").empty();
 };
 
 var getCSVFile = function() {
