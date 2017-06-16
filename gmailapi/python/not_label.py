@@ -64,31 +64,35 @@ def main():
     service = discovery.build('gmail', 'v1', http=http)
 
     #response = service.users().messages().list(userId=user_id, labelIds='Label_5').execute()
-    response = service.users().messages().list(userId=user_id, q='label:hr').execute()
-    hr_messages = []
+    response = service.users().messages().list(userId=user_id, q='label:inbox AND NOT label:'+sys.argv[2]).execute()
+    messages = []
 
     if 'messages' in response:
-        hr_messages.extend(response['messages'])
+        messages.extend(response['messages'])
 
     while 'nextPageToken' in response:
+        print(messages)
         page_token = response['nextPageToken']
         #response = service.users().messages().list(userId=user_id, labelIds='Label_5', pageToken=page_token).execute()
-        response = service.users().messages().list(userId=user_id, q='label:hr', pageToken=page_token).execute()
-        hr_messages.extend(response['messages'])
+        response = service.users().messages().list(userId=user_id, q='label:inbox AND NOT label:'+sys.argv[2], pageToken=page_token).execute()
+        messages.extend(response['messages'])
+        if len(messages) >= 1000:
+            break
+
 
     f = open(sys.argv[1], 'wt')
     try:
         writer = csv.writer(f)
-        writer.writerow( ('Domain Name', 'Subject', 'Label') )
+        #writer.writerow( ('Domain Name', 'Subject') )
 
-        for message in hr_messages:
+        for message in messages:
             m = service.users().messages().get(userId=user_id, id=message['id'],
                                                  format='raw').execute()
             msg_str = base64.urlsafe_b64decode(m['raw'].encode('ASCII'))
             msg = email.message_from_string(msg_str)
             msg_from = msg.get('from')
-            writer.writerow( (msg_from.split('@')[1].split('.')[0], msg.get('subject'), 'hr') )
-            print( (msg_from.split('@')[1].split('.')[0], msg.get('subject'), 'hr') )
+            writer.writerow( (msg_from.split('@')[1].split('.')[0], msg.get('subject'), "not_hr") )
+            print( (msg_from.split('@')[1].split('.')[0], msg.get('subject')) )
 #            for part in msg.walk():
 #                if part.get_content_type() == 'text/plain':
 #                    print(part.get_payload())
