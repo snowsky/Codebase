@@ -1,6 +1,8 @@
 # coding: utf-8
 import tensorflow as tf
 import numpy as np
+from tensorflow.python import debug as tf_debug
+
 x = np.random.rand(100).astype(np.float32)
 y=x*0.1+0.3
 #x.reshape(10,10)
